@@ -62,18 +62,13 @@ class ResourceRouteLoaderTest extends Unit
      */
     public function testPrepareScopeOfResourceConfiguration(): void
     {
-        $unprotectedResourceTypes = [];
-
-        $this->configMock->expects($this->atLeastOnce())
-            ->method('getUnprotectedResourceTypes')
-            ->willReturn($unprotectedResourceTypes);
-
-        $resourceConfiguration = [
-            RequestConstantsInterface::ATTRIBUTE_TYPE => 'tests',
-            RequestConstantsInterface::ATTRIBUTE_CONFIGURATION => [
-                ResourceRouteCollection::IS_PROTECTED => false,
-            ],
+        $actualResourceConfiguration = [];
+        $unprotectedResourceTypes = [
+            "foo" => ["get_action"],
+            "bar" => ["post_action"],
         ];
+
+        $resourceConfiguration = $this->getResourceConfiguration($unprotectedResourceTypes);
 
         try {
             $reflection = new ReflectionClass(\get_class($this->resourceRouteLoader));
@@ -84,10 +79,62 @@ class ResourceRouteLoaderTest extends Unit
             $actualResourceConfiguration = $method->invokeArgs($this->resourceRouteLoader, [
                 $resourceConfiguration,
             ]);
-
-            $this->assertTrue($actualResourceConfiguration[RequestConstantsInterface::ATTRIBUTE_CONFIGURATION][ResourceRouteCollection::IS_PROTECTED]);
         } catch (ReflectionException $e) {
             $this->fail();
         }
+
+        $this->assertTrue(!$actualResourceConfiguration[RequestConstantsInterface::ATTRIBUTE_CONFIGURATION][ResourceRouteCollection::IS_PROTECTED]);
+    }
+
+    /**
+     * Test configuration without action name
+     *
+     * @return void
+     */
+    public function testPrepareScopeOfResourceWithDefectConfiguration(): void
+    {
+        $actualResourceConfiguration = [];
+        $unprotectedResourceTypes = [
+            "foo",
+            "bar",
+        ];
+
+        $resourceConfiguration = $this->getResourceConfiguration($unprotectedResourceTypes);
+
+        try {
+            $reflection = new ReflectionClass(\get_class($this->resourceRouteLoader));
+
+            $method = $reflection->getMethod('prepareScopeOfResourceConfiguration');
+            $method->setAccessible(true);
+
+            $actualResourceConfiguration = $method->invokeArgs($this->resourceRouteLoader, [
+                $resourceConfiguration,
+            ]);
+        } catch (ReflectionException $e) {
+            $this->fail();
+        }
+
+        $this->assertFalse(!$actualResourceConfiguration[RequestConstantsInterface::ATTRIBUTE_CONFIGURATION][ResourceRouteCollection::IS_PROTECTED]);
+    }
+
+    /**
+     * @param array $unprotectedResourceTypes
+     *
+     * @return array
+     */
+    public function getResourceConfiguration(array $unprotectedResourceTypes): array
+    {
+        $this->configMock->expects($this->atLeastOnce())
+            ->method('getUnprotectedResourceTypes')
+            ->willReturn($unprotectedResourceTypes);
+
+        $resourceConfiguration = [
+            RequestConstantsInterface::ATTRIBUTE_TYPE => 'foo',
+            RequestConstantsInterface::ATTRIBUTE_CONFIGURATION => [
+                ResourceRouteCollection::CONTROLLER_ACTION => "get_action",
+                ResourceRouteCollection::IS_PROTECTED => true,
+            ],
+        ];
+        return $resourceConfiguration;
     }
 }
