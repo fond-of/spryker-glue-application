@@ -50,7 +50,7 @@ class GlueApplicationConfigTest extends Unit
         Config::getInstance()->init();
 
         $expectedValue = [
-            'tests' => ["getProducts"],
+            'tests' => ['getProducts'],
         ];
 
         $this->assertEquals($expectedValue, $this->glueApplicationConfig->getUnprotectedResourceTypes());

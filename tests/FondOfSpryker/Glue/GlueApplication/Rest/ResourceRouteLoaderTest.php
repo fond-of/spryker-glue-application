@@ -64,8 +64,8 @@ class ResourceRouteLoaderTest extends Unit
     {
         $actualResourceConfiguration = [];
         $unprotectedResourceTypes = [
-            "foo" => ["get_action"],
-            "bar" => ["post_action"],
+            'foo' => ['get_action'],
+            'bar' => ['post_action'],
         ];
 
         $resourceConfiguration = $this->getResourceConfiguration($unprotectedResourceTypes);
@@ -95,8 +95,8 @@ class ResourceRouteLoaderTest extends Unit
     {
         $actualResourceConfiguration = [];
         $unprotectedResourceTypes = [
-            "foo",
-            "bar",
+            'foo',
+            'bar',
         ];
 
         $resourceConfiguration = $this->getResourceConfiguration($unprotectedResourceTypes);
@@ -131,7 +131,7 @@ class ResourceRouteLoaderTest extends Unit
         $resourceConfiguration = [
             RequestConstantsInterface::ATTRIBUTE_TYPE => 'foo',
             RequestConstantsInterface::ATTRIBUTE_CONFIGURATION => [
-                ResourceRouteCollection::CONTROLLER_ACTION => "get_action",
+                ResourceRouteCollection::CONTROLLER_ACTION => 'get_action',
                 ResourceRouteCollection::IS_PROTECTED => true,
             ],
         ];
