@@ -49,7 +49,12 @@ class GlueApplicationFactoryTest extends Unit
     public function testCreateRestResourceRouteLoader(): void
     {
         $this->containerMock->expects($this->atLeastOnce())
-            ->method('offsetGet')
+            ->method('has')
+            ->with(GlueApplicationDependencyProvider::PLUGIN_RESOURCE_ROUTES)
+            ->willReturn(true);
+
+        $this->containerMock->expects($this->atLeastOnce())
+            ->method('get')
             ->with(GlueApplicationDependencyProvider::PLUGIN_RESOURCE_ROUTES)
             ->willReturn([]);
 
