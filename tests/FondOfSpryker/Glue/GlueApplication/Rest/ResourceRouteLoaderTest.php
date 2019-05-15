@@ -41,10 +41,14 @@ class ResourceRouteLoaderTest extends Unit
         parent::_before();
 
         $this->resourcePlugins = [
-            $this->getMockForAbstractClass(ResourceRoutePluginInterface::class),
+            $this->getMockBuilder(ResourceRoutePluginInterface::class)
+                ->disableOriginalConstructor()
+                ->getMock(),
         ];
 
-        $this->versionResolverMock = $this->getMockForAbstractClass(VersionResolverInterface::class);
+        $this->versionResolverMock = $this->getMockBuilder(VersionResolverInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->configMock = $this->getMockBuilder(GlueApplicationConfig::class)
             ->disableOriginalConstructor()
@@ -71,7 +75,7 @@ class ResourceRouteLoaderTest extends Unit
         $resourceConfiguration = $this->getResourceConfiguration($unprotectedResourceTypes);
 
         try {
-            $reflection = new ReflectionClass(\get_class($this->resourceRouteLoader));
+            $reflection = new ReflectionClass(get_class($this->resourceRouteLoader));
 
             $method = $reflection->getMethod('prepareScopeOfResourceConfiguration');
             $method->setAccessible(true);
@@ -102,7 +106,7 @@ class ResourceRouteLoaderTest extends Unit
         $resourceConfiguration = $this->getResourceConfiguration($unprotectedResourceTypes);
 
         try {
-            $reflection = new ReflectionClass(\get_class($this->resourceRouteLoader));
+            $reflection = new ReflectionClass(get_class($this->resourceRouteLoader));
 
             $method = $reflection->getMethod('prepareScopeOfResourceConfiguration');
             $method->setAccessible(true);
@@ -115,6 +119,31 @@ class ResourceRouteLoaderTest extends Unit
         }
 
         $this->assertFalse(!$actualResourceConfiguration[RequestConstantsInterface::ATTRIBUTE_CONFIGURATION][ResourceRouteCollection::IS_PROTECTED]);
+    }
+
+    /**
+     * Test configuration without action name
+     *
+     * @return void
+     */
+    public function testPrepareScopeOfResourceWithoutConfiguration(): void
+    {
+        $actualResourceConfiguration = null;
+
+        try {
+            $reflection = new ReflectionClass(get_class($this->resourceRouteLoader));
+
+            $method = $reflection->getMethod('prepareScopeOfResourceConfiguration');
+            $method->setAccessible(true);
+
+            $actualResourceConfiguration = $method->invokeArgs($this->resourceRouteLoader, [
+                null,
+            ]);
+        } catch (ReflectionException $e) {
+            $this->fail();
+        }
+
+        $this->assertNull($actualResourceConfiguration);
     }
 
     /**

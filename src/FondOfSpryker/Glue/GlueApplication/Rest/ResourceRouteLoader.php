@@ -62,7 +62,7 @@ class ResourceRouteLoader extends BaseResourceRouteLoader
         $currentControllerAction = $resourceConfiguration[RequestConstantsInterface::ATTRIBUTE_CONFIGURATION][ResourceRouteCollection::CONTROLLER_ACTION];
 
         //Check if resource is unprotected
-        $isUnProtected = \in_array($currentResourceType, \array_keys($unprotectedResourceTypes));
+        $isUnProtected = in_array($currentResourceType, array_keys($unprotectedResourceTypes));
 
         //Check if controller action config exists, if not return explicit isProtected = true. Safety first!
         if (!array_key_exists($currentResourceType, $unprotectedResourceTypes)) {
@@ -71,7 +71,7 @@ class ResourceRouteLoader extends BaseResourceRouteLoader
 
         //Check if action is protected, skip if resource is not configured
         if ($isUnProtected && isset($unprotectedResourceTypes[$currentResourceType])) {
-            $isUnProtected = \in_array($currentControllerAction, $unprotectedResourceTypes[$currentResourceType]);
+            $isUnProtected = in_array($currentControllerAction, $unprotectedResourceTypes[$currentResourceType]);
         }
 
         $resourceConfiguration[RequestConstantsInterface::ATTRIBUTE_CONFIGURATION][ResourceRouteCollection::IS_PROTECTED] = !$isUnProtected;
